@@ -5,6 +5,6 @@ This repository contains mobile applications created as part of the Emerging Tec
 
 ## Repository Contents
 
-### 1. Goal List
+1. Goal List
 
-### 2. Messaging Application (In Progress)
+2. Messaging Application (In Progress)
