@@ -1,17 +1,45 @@
-import { StyleSheet, Text, View, TextInput, Pressable, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Pressable, Image, Alert } from 'react-native';
 import { Link, useRouter, Stack } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const SignIn = () => {
   const router = useRouter();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSignIn = () => {
+    if (username === 'team4' && password === 'team4') {
+      router.push('/home'); 
+    } else if (username === 'admin' && password === 'admin') {
+      Alert.alert('Access Denied', 'Admin credentials cannot be used to access the user area.');
+    } else {
+      Alert.alert('Error', 'Invalid credentials');
+    }
+  };
+
+  const handleAdminSignIn = () => {
+    if (username === 'admin' && password === 'admin') {
+      router.push('/admin'); 
+    } else if (username === 'team4' && password === 'team4') {
+      Alert.alert('Access Denied', 'User credentials cannot be used to access the admin area.');
+    } else {
+      Alert.alert('Error', 'Invalid credentials');
+    }
+  };
 
   return (
     <GestureHandlerRootView style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
       <StatusBar barStyle="dark-content" backgroundColor="#fff" hidden={false} />
+      
+      {/* Admin Button */}
+      <Pressable style={styles.adminButton} onPress={handleAdminSignIn}>
+        <Text style={styles.adminButtonText}>Admin</Text>
+      </Pressable>
+
       <View style={styles.circleTopRight} />
       <View style={styles.circleBottomLeft} />
 
@@ -22,21 +50,35 @@ const SignIn = () => {
         {/* Username and Password Input */}
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Username:</Text>
-          <TextInput style={styles.inputBox} placeholder="Enter Username" />
+          <TextInput
+            style={styles.inputBox}
+            placeholder="Enter Username"
+            value={username}
+            onChangeText={setUsername}
+          />
         </View>
 
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Password:</Text>
-          <TextInput style={styles.inputBox} placeholder="Enter Password" secureTextEntry />
+          <TextInput
+            style={styles.inputBox}
+            placeholder="Enter Password"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
         </View>
 
         {/* Gradient Sign In Button */}
-        <Pressable onPress={() => router.push('/home')}>
+        <Pressable onPress={handleSignIn} style={({ pressed }) => [
+          styles.gradientButton,
+          { opacity: pressed ? 0.8 : 1 },
+        ]}>
           <LinearGradient
             colors={['#ff7e5f', '#feb47b']} 
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={styles.gradientButton}
+            style={styles.gradientButtonInner}
           >
             <Text style={styles.signintext}>Sign In</Text>
           </LinearGradient>
@@ -141,10 +183,14 @@ const styles = StyleSheet.create({
   },
   gradientButton: {
     width: '80%',
-    padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
     marginBottom: 15,
+    overflow: 'hidden', // Ensure the LinearGradient doesn't overflow
+  },
+  gradientButtonInner: {
+    width: '100%',
+    padding: 10,
+    alignItems: 'center',
   },
   signintext: {
     color: 'white',
@@ -187,13 +233,14 @@ const styles = StyleSheet.create({
   },
   adminButton: {
     backgroundColor: '#F4B949',
+    marginTop: 25,
     paddingVertical: 5,
     paddingHorizontal: 15,
-    marginTop: 25, 
     borderRadius: 15,
     position: 'absolute',
     top: 40, 
-    left:20,
+    left: 20,
+    zIndex: 2, 
   },
   adminButtonText: {
     fontSize: 14,
