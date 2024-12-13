@@ -10,10 +10,9 @@ const Index = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const router = useRouter();
 
-  // Animation values
   const circleTopRightAnim = useRef(new Animated.Value(0)).current;
   const circleBottomLeftAnim = useRef(new Animated.Value(0)).current;
-  const contentAnim = useRef(new Animated.Value(0)).current; // Combined animation for logo and text
+  const contentAnim = useRef(new Animated.Value(0)).current; 
 
   // Load the font
   useEffect(() => {
@@ -30,7 +29,6 @@ const Index = () => {
     loadFonts();
   }, []);
 
-  // Start animations in sequence
   useEffect(() => {
     Animated.sequence([
       Animated.timing(circleTopRightAnim, {
@@ -52,7 +50,7 @@ const Index = () => {
   }, []);
 
   if (!fontsLoaded) {
-    return null; // Display loading screen or null until fonts are loaded
+    return null;
   }
 
   return (
@@ -61,7 +59,6 @@ const Index = () => {
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor="#fff" hidden={false} />
 
-        {/* Animated circles */}
         <Animated.View
           style={[
             styles.circleTopRight,
@@ -75,7 +72,6 @@ const Index = () => {
           ]}
         />
 
-        {/* Combined Animated logo and text */}
         <Animated.View style={[styles.contentContainer, { opacity: contentAnim }]}>
           <Pressable onPress={() => router.push('/signin')}>
             <Image source={require('../assets/images/Logo.png')} style={styles.headerImage} />

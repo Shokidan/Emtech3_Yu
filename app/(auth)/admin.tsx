@@ -1,26 +1,65 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, TextInput, Image, Modal, Button } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  TextInput,
+  Image,
+  Modal,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 
 const AdminInsoleRecommendation = () => {
   const [selectedArch, setSelectedArch] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isArchModalVisible, setIsArchModalVisible] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState(null);
 
   const data = {
     highArch: [
-      { id: '1', name: 'Allan Patrick', bio: 'Age: 22 Occupation: Programmer', image: require('../../assets/images/allanPatrick.png') },
-      { id: '2', name: 'Marl Potal', bio: 'Age: 21 Occupation: Network Engineer', image: require('../../assets/images/marlPotal.png') },
+      {
+        id: '1',
+        name: 'Allan Patrick',
+        bio: 'Age: 22 Occupation: Programmer',
+        image: require('../../assets/images/allanPatrick.png'),
+      },
+      {
+        id: '2',
+        name: 'Marl Potal',
+        bio: 'Age: 21 Occupation: Network Engineer',
+        image: require('../../assets/images/marlPotal.png'),
+      },
     ],
     normalArch: [
-      { id: '3', name: 'Hev Yzabel', bio: 'Age: 23 Occupation: System Administrator', image: require('../../assets/images/hevYzabel.png') },
-      { id: '4', name: 'Jaira Maculada', bio: 'Age: 22 Occupation: Network Specialist', image: require('../../assets/images/jairaMaculada.png') },
+      {
+        id: '3',
+        name: 'Hev Yzabel',
+        bio: 'Age: 23 Occupation: System Administrator',
+        image: require('../../assets/images/hevYzabel.png'),
+      },
+      {
+        id: '4',
+        name: 'Jaira Maculada',
+        bio: 'Age: 22 Occupation: Network Specialist',
+        image: require('../../assets/images/jairaMaculada.png'),
+      },
     ],
     flatFooted: [
-      { id: '5', name: 'Janjan Leo', bio: 'Age: 25 Occupation: Programmer', image: require('../../assets/images/janjanLeo.png') },
-      { id: '6', name: 'Joram Gomez', bio: 'Age: 24 Occupation: Programmer', image: require('../../assets/images/joramGomez.png') },
+      {
+        id: '5',
+        name: 'Janjan Leo',
+        bio: 'Age: 25 Occupation: Programmer',
+        image: require('../../assets/images/janjanLeo.png'),
+      },
+      {
+        id: '6',
+        name: 'Joram Gomez',
+        bio: 'Age: 24 Occupation: Programmer',
+        image: require('../../assets/images/joramGomez.png'),
+      },
     ],
   };
 
@@ -32,18 +71,15 @@ const AdminInsoleRecommendation = () => {
 
   const handleArchPress = (archType) => {
     setSelectedArch(archType);
-    setIsModalVisible(true);
+    setIsArchModalVisible(true);
   };
 
   const handlePersonPress = (person) => {
-    setIsModalVisible(false); // Close arch modal first
-    setTimeout(() => {
-      setSelectedPerson(person); // Open person modal
-    }, 300); // Delay to ensure smooth transition between modals
+    setSelectedPerson(person);
   };
 
   const getFilteredPersons = () => {
-    if (!selectedArch) return [];
+    if (!selectedArch || !data[selectedArch]) return [];
     const persons = data[selectedArch];
     return persons.filter((person) =>
       person.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -56,7 +92,7 @@ const AdminInsoleRecommendation = () => {
       <View style={styles.circleTopRight} />
       <View style={styles.circleBottomLeft} />
       <Image
-        source={require('../../assets/images/Logo.png')} 
+        source={require('../../assets/images/Logo.png')}
         style={styles.logo}
       />
       <Text style={styles.header}>Admin View</Text>
@@ -73,17 +109,21 @@ const AdminInsoleRecommendation = () => {
         ))}
       </View>
 
+      {/* Arch Modal */}
       <Modal
-        visible={isModalVisible}
+        visible={isArchModalVisible}
         transparent={true}
         animationType="slide"
-        onRequestClose={() => setIsModalVisible(false)}
+        onRequestClose={() => setIsArchModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContainer, { backgroundColor: archColors[selectedArch] }]}>
+          <View style={[styles.modalContainer, { backgroundColor: archColors[selectedArch] || '#fff' }]}>
             <Text style={styles.modalHeader}>
-              {selectedArch === 'highArch' ? 'High Arch' : 
-              selectedArch === 'normalArch' ? 'Normal Arch' : 'Flat Footed'}
+              {selectedArch === 'highArch'
+                ? 'High Arch'
+                : selectedArch === 'normalArch'
+                ? 'Normal Arch'
+                : 'Flat Footed'}
             </Text>
 
             <TextInput
@@ -96,19 +136,28 @@ const AdminInsoleRecommendation = () => {
             <FlatList
               data={getFilteredPersons()}
               keyExtractor={(item) => item.id}
-              renderItem={({ item }) => 
-                <TouchableOpacity style={styles.personTouchable} onPress={() => handlePersonPress(item)}>
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.personTouchable}
+                  onPress={() => handlePersonPress(item)}
+                >
                   <Text style={styles.personName}>{item.name}</Text>
                 </TouchableOpacity>
-              }
+              )}
               ListEmptyComponent={<Text style={styles.noResultsText}>No results found</Text>}
             />
 
-            <Button title="Close" onPress={() => setIsModalVisible(false)} />
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setIsArchModalVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
+      {/* Person Modal */}
       {selectedPerson && (
         <Modal
           visible={!!selectedPerson}
@@ -117,13 +166,18 @@ const AdminInsoleRecommendation = () => {
           onRequestClose={() => setSelectedPerson(null)}
         >
           <View style={styles.modalOverlay}>
-            <View style={[styles.modalContainer, { backgroundColor: archColors[selectedArch] }]}>
+            <View style={[styles.modalContainer, { backgroundColor: archColors[selectedArch] || '#fff' }]}>
               {selectedPerson.image && (
                 <Image source={selectedPerson.image} style={styles.personImage} />
               )}
               <Text style={styles.personName}>{selectedPerson.name}</Text>
               <Text style={styles.bioDetail}>{selectedPerson.bio}</Text>
-              <Button title="Close" onPress={() => setSelectedPerson(null)} />
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setSelectedPerson(null)}
+              >
+                <Text style={styles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </Modal>
@@ -131,6 +185,9 @@ const AdminInsoleRecommendation = () => {
     </SafeAreaView>
   );
 };
+
+
+export default AdminInsoleRecommendation;
 
 const styles = StyleSheet.create({
     container: {
