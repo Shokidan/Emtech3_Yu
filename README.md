@@ -1,10 +1,18 @@
-# Emerging Technology 3
-Code for mobile applications developed in Emerging Technology.
+# Emerging Technology 3 Projects
 
-This repository contains mobile applications created as part of the Emerging Technology course. It demonstrates various technologies and features implemented in React Native, including goal management and a messaging app (currently in progress).
+This repository contains mobile application projects developed using React Native.
 
-## Repository Contents
+## Projects
 
-1. Goal List
+### Goal List App
+- Goal management application using React Native components and state management.
 
-2. Messaging Application (In Progress)
+### Messaging Application
+- Messaging interface supporting text, image, and location-based messages.
+
+## Technologies Used
+
+- React Native
+- JavaScript
+- Expo
+- Git
